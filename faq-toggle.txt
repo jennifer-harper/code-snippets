@@ -1,0 +1,114 @@
+//page name
+<html>
+  {% set faq = craft.entries().section('examXray').all() %} {% if faq %}
+  <div class="faq-wrapper">
+    //matric name {% for block in entry.faqs %} //block name {% if block.type ==
+    'faqSection' %}
+    <div class="accordion-item {{ loop.first ? 'open' : '' }}">
+      {% if block.faqQuestion %}
+      <h3 class="question">
+        {{ block.faqQuestion }}
+
+        <span>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 20 11"
+            fill="none"
+          >
+            <path
+              d="M1 1L10 10L19 1"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+        </span>
+      </h3>
+      {% endif %} {% if block.faqAnswer %}
+      <div class="answer">{{ block.faqAnswer }}</div>
+      {% endif %}
+    </div>
+    {% endif %} {% endfor %}
+  </div>
+  {% endif %}
+</html>
+
+<styles>
+.faq-wrapper{
+  padding-top:$base-font-size;
+
+  @media #{$mq-medium}{
+    padding-left:20vw;
+  }
+
+  .accordion-item {
+    border-bottom: 1px solid $accent-300;
+    &:last-of-type{
+      border-width: 0;
+    }
+  }
+
+  .question {
+    cursor: pointer;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding-top: $base-font-size;
+    margin-bottom: $base-font-size;
+ 
+    span{
+      margin-left:$base-font-size;
+      background-color: $base-accent-color;
+      padding: 10px;
+      display: flex;
+      border-radius: 100%;
+    }
+    svg{
+      transition: all 0.3s ease-in;
+      stroke:#fff;
+      width:20px;
+      height:20px
+    }
+  }
+  
+  .answer {
+    display: none;
+    overflow: hidden;
+    margin-bottom: $base-font-size;
+  }
+  
+  .open {
+    .question{
+      svg{
+          transform:rotate(-180deg);
+        }
+    }
+  }
+}
+</styles>
+
+<script>
+  $(document).ready(function () {
+    // Initially hide all answers
+    $('.accordion-item .answer').hide()
+
+    // Add 'open' class to the first question
+    $('.accordion-item:first-child').addClass('open').find('.answer').show()
+
+    $('.accordion-item .question').click(function (event) {
+      event.preventDefault() // Prevent default behavior
+
+      var accordionItem = $(this).parent('.accordion-item')
+      var answer = accordionItem.find('.answer')
+
+      // Toggle the class immediately
+      accordionItem.toggleClass('open')
+
+      // Use transitionend event to handle the completion of slideToggle
+      answer.slideToggle(500).one('transitionend', function () {
+        // Code to execute after the slideToggle animation is complete
+      })
+    })
+  })
+</script>
